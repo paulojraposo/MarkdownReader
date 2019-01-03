@@ -1,0 +1,13 @@
+
+body {
+    font-family: 'Crimson Text', 'TeX Gyre Pagella', 'Daniel Black', 'EB Garamond 12', serif;
+    font-size: 20px;
+}
+pre {
+    font-family: 'mononoki', 'Ubuntu Mono', 'Consolas', monospace;
+    font-size: 70%; 
+}
+blockquote {
+    font-family: 'mononoki', 'Ubuntu Mono', 'Consolas', monospace;
+    font-size: 70%; 
+}

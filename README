@@ -1,0 +1,3 @@
+# Markdown Renderer
+
+A very simple, easy Markdown renderer. Takes a *.md file, transpiles it to HTML with mistletoe (Python), and displays the output in a Java Swing/FX app using a WebView Component and accompanying CSS sheet. For quick, throw-away rendering of notes taken in Markdown without keeping an HTML file.
