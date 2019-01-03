@@ -253,6 +253,8 @@ public class MarkdownReader {
         // assume it's a full, absolute path to valid Markdown.
         if (args.length == 1){
             // String workingDir = System.getProperty("user.dir");
+            htmlPath = args[0];
+            System.out.println(htmlPath);
             File givenFile = new File(args[0]);
             makeHTMLFile(givenFile);
             drawFXComponents();
