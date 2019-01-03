@@ -6,9 +6,9 @@ body {
 pre {
     font-family: 'mononoki', 'Ubuntu Mono', 'Consolas', monospace;
     font-size: 70%; 
-    white-space: pre;
-}
-blockquote {
-    font-family: 'mononoki', 'Ubuntu Mono', 'Consolas', monospace;
-    font-size: 70%; 
+    overflow: auto;
+    background-color: rgb(219, 221, 217);
+    border-style: solid;
+    border-color: rgb(182, 185, 179);
+    border-width: 1px;
 }
