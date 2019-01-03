@@ -16,16 +16,20 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
+import javax.imageio.ImageIO;
+
 
 
 /*
@@ -42,7 +46,7 @@ See this for drag-n-drop in Swing: https://stackoverflow.com/questions/811248/ho
 public class MarkdownReader {
 
     static JFXPanel jfxPanel = new JFXPanel(); // Scrollable JCompenent
-    static String MDText = "*Please choose an .md file...* :)";
+    static String MDText = "*Please choose an .md file...*";
     static String htmlPath = null;
 
 
@@ -130,20 +134,29 @@ public class MarkdownReader {
     private static void createAndShowGUI() {
 
         JFrame frame = new JFrame("Markdown Reader");
-        Container pane;
-        pane = frame.getContentPane();
+        Container pane = frame.getContentPane();
         pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setPreferredSize(new Dimension(520, 700));
 
         JPanel buttonPanel = new JPanel();
-        buttonPanel.setPreferredSize(new Dimension(520, 60));
-        JButton openFileButton = new JButton("Read MD File to HTML...");
+        buttonPanel.setPreferredSize(new Dimension(520, 80));
+        JButton openFileButton = new JButton();
+        openFileButton.setToolTipText("Load a Markdown file, transpile it to an HTML file in the same directory, and view it here.");
+        try {
+            java.awt.Image img = ImageIO.read(MarkdownReader.class.getResource("resources/MDtoHTML.png"));    
+            openFileButton.setIcon(new ImageIcon(img));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }        
         openFileButton.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent arg0) {
                 //Create a file chooser
                 JFileChooser fc = new JFileChooser();
+                // Filter for markdown files.
+                FileNameExtensionFilter filter = new FileNameExtensionFilter("Markdown", "md", "MD");
+                fc.setFileFilter(filter);
                 int returnVal = fc.showOpenDialog(jfxPanel);
                 if(returnVal == JFileChooser.APPROVE_OPTION) {
                     File chosenFile = fc.getSelectedFile();
@@ -154,14 +167,23 @@ public class MarkdownReader {
             }
         });
         buttonPanel.add(openFileButton);
-        JButton deleteHTMLButton = new JButton("Delete HTML File...");
+        JButton deleteHTMLButton = new JButton();
+        deleteHTMLButton.setToolTipText("Delete the HTML file made when the Markdown was transpiled.");
+        try {
+            java.awt.Image img = ImageIO.read(MarkdownReader.class.getResource("resources/delHTML.png"));    
+            deleteHTMLButton.setIcon(new ImageIcon(img));
+        } catch (Exception e) {
+            e.printStackTrace();
+        } 
         deleteHTMLButton.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent arg0) {
                 // Delete the HTML file, reset htmlPath to null, redraw FX.
-                deleteHTMLFile();
-                htmlPath = null;
-                drawFXComponents();
+                if (htmlPath != null){
+                    deleteHTMLFile();
+                    htmlPath = null;
+                    drawFXComponents();
+                }
             }
         });
         buttonPanel.add(deleteHTMLButton);
