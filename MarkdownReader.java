@@ -48,6 +48,7 @@ public class MarkdownReader {
 
     static JFXPanel jfxPanel = new JFXPanel(); // Scrollable JCompenent
     static String MDText = "*Please choose an .md file...*";
+    static String mdPath = null;
     static String htmlPath = null;
 
 
@@ -143,6 +144,7 @@ public class MarkdownReader {
         buttonPanel.setPreferredSize(new Dimension(520, 80));
 
         Dimension buttonSize = new Dimension(200, 74);
+
         JButton openFileButton = new JButton();
         openFileButton.setPreferredSize(buttonSize);
         openFileButton.setToolTipText("Load a Markdown file, transpile it to an HTML file in the same directory, and view it here.");
@@ -164,12 +166,36 @@ public class MarkdownReader {
                 if(returnVal == JFileChooser.APPROVE_OPTION) {
                     File chosenFile = fc.getSelectedFile();
                     // updateWebViewContentsWithFile(chosenFile);
+                    mdPath = chosenFile.getAbsolutePath();
                     makeHTMLFile(chosenFile);
                     drawFXComponents();
                 }
             }
         });
         buttonPanel.add(openFileButton);
+
+        JButton refreshButton = new JButton();
+        refreshButton.setPreferredSize(new Dimension(74, 74));
+        refreshButton.setToolTipText("Re-transpile, save, and load the HTML.");
+        try {
+            java.awt.Image img = ImageIO.read(MarkdownReader.class.getResource("resources/icons8-refresh.png"));    
+            refreshButton.setIcon(new ImageIcon(img));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        refreshButton.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                // Delete the HTML file, reset htmlPath to null, redraw FX.
+                if (htmlPath != null){
+                    File mdFile = new File(mdPath);
+                    makeHTMLFile(mdFile);
+                    drawFXComponents();
+                }
+            }
+        });
+        buttonPanel.add(refreshButton);
+
         JButton deleteHTMLButton = new JButton();
         deleteHTMLButton.setPreferredSize(buttonSize);
         deleteHTMLButton.setToolTipText("Delete the HTML file made when the Markdown was transpiled.");
@@ -185,12 +211,14 @@ public class MarkdownReader {
                 // Delete the HTML file, reset htmlPath to null, redraw FX.
                 if (htmlPath != null){
                     deleteHTMLFile();
+                    mdPath = null;
                     htmlPath = null;
                     drawFXComponents();
                 }
             }
         });
         buttonPanel.add(deleteHTMLButton);
+
         frame.add(buttonPanel);
 
         // Add the JFXPanel to the Swing app, and initialize
@@ -233,8 +261,7 @@ public class MarkdownReader {
             // Convert HTML filepath to URI for WebView.
             File f = new File(htmlPath);
             webView.getEngine().load(f.toURI().toString());
-        }       
-
+        }
         // Set the scene to be drawn as the WebView object.
         Scene scene = new Scene(webView);
         theJFXPanel.setScene(scene);
@@ -253,9 +280,8 @@ public class MarkdownReader {
         // assume it's a full, absolute path to valid Markdown.
         if (args.length == 1){
             // String workingDir = System.getProperty("user.dir");
-            htmlPath = args[0];
-            System.out.println(htmlPath);
-            File givenFile = new File(args[0]);
+            mdPath = args[0];
+            File givenFile = new File(mdPath);
             makeHTMLFile(givenFile);
             drawFXComponents();
         }
