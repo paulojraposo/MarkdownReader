@@ -36,7 +36,6 @@ import javax.swing.TransferHandler;
 
 /*
 TODO:
-* Add "Delete HTML and Exit" button to GUI to delete the HTML produced from the markdown.
 * Add drag-n-drop functionality to load HTML/MD.
 */
 
@@ -59,13 +58,11 @@ public class MarkdownReader {
         String         line = null;
         StringBuilder  stringBuilder = new StringBuilder();
         String         ls = System.getProperty("line.separator");
-    
         try {
             while((line = reader.readLine()) != null) {
                 stringBuilder.append(line);
                 stringBuilder.append(ls);
             }
-    
             return stringBuilder.toString();
         } finally {
             reader.close();
@@ -99,7 +96,7 @@ public class MarkdownReader {
             String mdText = readFile(mdFileAbsPath);
             // Create HTML file in same folder as the MD file.
             BufferedWriter writer = new BufferedWriter(new FileWriter(htmlPath));
-            // Transpile MD -> HTML.
+            // Transpile MD to HTML.
             String htmlText = md_to_html(mdText);
             writer.write(htmlText);
             writer.close();
@@ -140,7 +137,7 @@ public class MarkdownReader {
         Container pane = frame.getContentPane();
         pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setPreferredSize(new Dimension(520, 700));
+        frame.setPreferredSize(new Dimension(540, 700));
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.setPreferredSize(new Dimension(520, 80));
@@ -244,8 +241,6 @@ public class MarkdownReader {
     };
 
     public static void main(String[] args) {
-
-        // System.out.println("Running...");
         setLAF();
         SwingUtilities.invokeLater(new Runnable() {
             @Override
@@ -253,6 +248,15 @@ public class MarkdownReader {
                 createAndShowGUI();
             }
         });
+        // If the program was started with a file specified as an
+        // argument on the command line, load it. At present, we
+        // assume it's a full, absolute path to valid Markdown.
+        if (args.length == 1){
+            // String workingDir = System.getProperty("user.dir");
+            File givenFile = new File(args[0]);
+            makeHTMLFile(givenFile);
+            drawFXComponents();
+        }
     }
 
     private static void setLAF(){
