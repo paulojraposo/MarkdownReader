@@ -6,6 +6,7 @@ body {
 pre {
     font-family: 'mononoki', 'Ubuntu Mono', 'Consolas', monospace;
     font-size: 70%; 
+    white-space: pre;
 }
 blockquote {
     font-family: 'mononoki', 'Ubuntu Mono', 'Consolas', monospace;
