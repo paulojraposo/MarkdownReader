@@ -36,11 +36,7 @@ import javax.swing.TransferHandler;
 
 /*
 TODO:
-* Add drag-n-drop functionality to load HTML/MD.
-*/
-
-/*
-See this for drag-n-drop in Swing: https://stackoverflow.com/questions/811248/how-can-i-use-drag-and-drop-in-swing-to-get-file-path
+ Add drag-n-drop functionality to load HTML/MD. See this for drag-n-drop in Swing: https://stackoverflow.com/questions/811248/how-can-i-use-drag-and-drop-in-swing-to-get-file-path
 */
 
 
@@ -75,7 +71,7 @@ public class MarkdownReader {
         Parser parser = Parser.builder().build();
         Node document = parser.parse(mdText);
         HtmlRenderer renderer = HtmlRenderer.builder().build();
-        return String.valueOf( renderer.render(document) );
+        return String.valueOf(renderer.render(document));
     }
 
     private static void makeHTMLFile(File mdFile){
@@ -246,7 +242,7 @@ public class MarkdownReader {
 
         // Set the CSS
         // Tony Vu's answer helped: https://stackoverflow.com/questions/1480398/java-reading-a-file-from-current-directory
-        String cssPath = String.valueOf(MarkdownReader.class.getResource("style.css"));
+        String cssPath = String.valueOf(MarkdownReader.class.getResource("resources/style.css"));
         webView.getEngine().setUserStyleSheetLocation(cssPath);
 
         // Load different things depending on whether an HTML
