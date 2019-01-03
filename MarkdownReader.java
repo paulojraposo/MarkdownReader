@@ -30,6 +30,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import javax.imageio.ImageIO;
 
+import javax.swing.TransferHandler;
+
 
 
 /*
@@ -134,6 +136,7 @@ public class MarkdownReader {
     private static void createAndShowGUI() {
 
         JFrame frame = new JFrame("Markdown Reader");
+
         Container pane = frame.getContentPane();
         pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -141,7 +144,10 @@ public class MarkdownReader {
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.setPreferredSize(new Dimension(520, 80));
+
+        Dimension buttonSize = new Dimension(200, 74);
         JButton openFileButton = new JButton();
+        openFileButton.setPreferredSize(buttonSize);
         openFileButton.setToolTipText("Load a Markdown file, transpile it to an HTML file in the same directory, and view it here.");
         try {
             java.awt.Image img = ImageIO.read(MarkdownReader.class.getResource("resources/MDtoHTML.png"));    
@@ -168,6 +174,7 @@ public class MarkdownReader {
         });
         buttonPanel.add(openFileButton);
         JButton deleteHTMLButton = new JButton();
+        deleteHTMLButton.setPreferredSize(buttonSize);
         deleteHTMLButton.setToolTipText("Delete the HTML file made when the Markdown was transpiled.");
         try {
             java.awt.Image img = ImageIO.read(MarkdownReader.class.getResource("resources/delHTML.png"));    
