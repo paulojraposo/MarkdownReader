@@ -17,6 +17,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.*;
 import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.io.File;
@@ -65,10 +66,6 @@ public class MarkdownReader {
         }
     }
 
-    private static void deleteFile(String filepath){
-
-    }
-
     private static String md_to_html(String mdText){
         // Set up a commonmark Markdown parser, and use it to transpile to HTML.
         Parser parser = Parser.builder().build();
@@ -106,20 +103,29 @@ public class MarkdownReader {
         }
     }
 
-    private static void updateWebViewContentsWithFile(File aFile){
-        
-        String filePath = aFile.getAbsolutePath();
-
-        try {
-            // Read file to string, and set MDText to that string.
-            MDText = readFile(filePath);
+    private static void deleteHTMLFile(){
+        try{
+            Path htmlFilePath = Paths.get(htmlPath);
+            Files.delete(htmlFilePath);
         } catch (Exception e) {
-            MDText = "Something didn't work correctly.";
             e.printStackTrace();
-        }
-
-        drawFXComponents();
+        }   
     }
+
+    // private static void updateWebViewContentsWithFile(File aFile){
+        
+    //     String filePath = aFile.getAbsolutePath();
+
+    //     try {
+    //         // Read file to string, and set MDText to that string.
+    //         MDText = readFile(filePath);
+    //     } catch (Exception e) {
+    //         MDText = "Something didn't work correctly.";
+    //         e.printStackTrace();
+    //     }
+
+    //     drawFXComponents();
+    // }
 
     private static void createAndShowGUI() {
 
@@ -132,7 +138,7 @@ public class MarkdownReader {
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.setPreferredSize(new Dimension(520, 60));
-        JButton openFileButton = new JButton("Open MD File...");
+        JButton openFileButton = new JButton("Read MD File to HTML...");
         openFileButton.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent arg0) {
@@ -148,6 +154,17 @@ public class MarkdownReader {
             }
         });
         buttonPanel.add(openFileButton);
+        JButton deleteHTMLButton = new JButton("Delete HTML File...");
+        deleteHTMLButton.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                // Delete the HTML file, reset htmlPath to null, redraw FX.
+                deleteHTMLFile();
+                htmlPath = null;
+                drawFXComponents();
+            }
+        });
+        buttonPanel.add(deleteHTMLButton);
         frame.add(buttonPanel);
 
         // Add the JFXPanel to the Swing app, and initialize
