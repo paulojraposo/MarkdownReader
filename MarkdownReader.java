@@ -17,29 +17,23 @@ import java.awt.event.ActionListener;
 
 import javax.swing.*;
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.io.File;
 import java.io.IOException;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
-// import java.nio.file.*;
+import java.io.FileWriter;
+
 
 /*
 TODO:
-* Implement a pure Java parsing of the markdown, eliminating the need for mistletoe.
 * Add "Delete HTML and Exit" button to GUI to delete the HTML produced from the markdown.
 * Add drag-n-drop functionality to load HTML/MD.
-* Add file chooser functionality to load HTML/MD.
 */
 
 /*
-Strategy so far is to use mistletoe to make an html file *in the same folder as the .md*, view it
-with this app, then delete the file on close.
-
-Maybe better: get this Java app to make a system call to mistletoe, which produces the HTML to
-stout, which I can read into this Java app and render from there. That way it's a pure Java app,
-just depends on mistletoe being installed and on the system PATH. That way no HTML file is written
-to disk or stored.
-
 See this for drag-n-drop in Swing: https://stackoverflow.com/questions/811248/how-can-i-use-drag-and-drop-in-swing-to-get-file-path
 */
 
@@ -48,6 +42,7 @@ public class MarkdownReader {
 
     static JFXPanel jfxPanel = new JFXPanel(); // Scrollable JCompenent
     static String MDText = "*Please choose an .md file...* :)";
+    static String htmlPath = null;
 
 
     // With thanks to OscarRyz:
@@ -70,26 +65,60 @@ public class MarkdownReader {
         }
     }
 
-    private static void updateWebViewContentsWithFile(File aFile){
+    private static void deleteFile(String filepath){
 
-        // Read file to string, and set MDText to that string.
+    }
+
+    private static String md_to_html(String mdText){
+        // Set up a commonmark Markdown parser, and use it to transpile to HTML.
+        Parser parser = Parser.builder().build();
+        Node document = parser.parse(mdText);
+        HtmlRenderer renderer = HtmlRenderer.builder().build();
+        return String.valueOf( renderer.render(document) );
+    }
+
+    private static void makeHTMLFile(File mdFile){
+
+        String mdFileAbsPath = mdFile.getAbsolutePath();
+
+        // Define path to HTML file in same directory.
+        Path mdPath = Paths.get(mdFileAbsPath);
+        Path mdParentPath = mdPath.getParent();
+        String mdFileName = mdPath.getFileName().toString();
+        String[] nameParts = mdFileName.split("[.]");
+        String mdFileBaseName = nameParts[0];
+        String htmlFileName = mdFileBaseName + ".html";
+        // Set static variable htmlPath so it's accessible outside of this method.
+        htmlPath = mdParentPath.resolve(htmlFileName).toString();
+
+        try {
+            // Read the MD file to a string.
+            String mdText = readFile(mdFileAbsPath);
+            // Create HTML file in same folder as the MD file.
+            BufferedWriter writer = new BufferedWriter(new FileWriter(htmlPath));
+            // Transpile MD -> HTML.
+            String htmlText = md_to_html(mdText);
+            writer.write(htmlText);
+            writer.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void updateWebViewContentsWithFile(File aFile){
+        
         String filePath = aFile.getAbsolutePath();
 
         try {
-            MDText =  readFile(filePath);
+            // Read file to string, and set MDText to that string.
+            MDText = readFile(filePath);
         } catch (Exception e) {
-            //TODO: handle exception
             MDText = "Something didn't work correctly.";
+            e.printStackTrace();
         }
 
-        // Then we just recall initFX().
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                initFX(jfxPanel);
-            }
-        });
-
+        drawFXComponents();
     }
 
     private static void createAndShowGUI() {
@@ -111,10 +140,10 @@ public class MarkdownReader {
                 JFileChooser fc = new JFileChooser();
                 int returnVal = fc.showOpenDialog(jfxPanel);
                 if(returnVal == JFileChooser.APPROVE_OPTION) {
-                    System.out.println("You chose to open this file: " +
-                         fc.getSelectedFile().getName());
                     File chosenFile = fc.getSelectedFile();
-                    updateWebViewContentsWithFile(chosenFile);
+                    // updateWebViewContentsWithFile(chosenFile);
+                    makeHTMLFile(chosenFile);
+                    drawFXComponents();
                 }
             }
         });
@@ -124,22 +153,23 @@ public class MarkdownReader {
         // Add the JFXPanel to the Swing app, and initialize
         // it in its own JFX thread.
         frame.add(jfxPanel);
+        drawFXComponents();
+
+        //Display the window.
+        frame.pack();
+        frame.setVisible(true);
+    }
+
+    private static void drawFXComponents(){
         Platform.runLater(new Runnable() {
             @Override
             public void run() {
                 initFX(jfxPanel);
             }
         });
-
-        //Display the window.
-        frame.pack();
-        frame.setVisible(true);
-
     }
 
     private static void initFX(JFXPanel theJFXPanel){
-
-        System.out.println("initFX was called.");
         
         WebView webView = new WebView();
 
@@ -148,17 +178,23 @@ public class MarkdownReader {
         String cssPath = String.valueOf(MarkdownReader.class.getResource("style.css"));
         webView.getEngine().setUserStyleSheetLocation(cssPath);
 
-        // Set up a commonmark Markdown parser, and use it to transpile to HTML.
-        Parser parser = Parser.builder().build();
-        Node document = parser.parse(MDText);
-        HtmlRenderer renderer = HtmlRenderer.builder().build();
-        String outHTML = String.valueOf( renderer.render(document) );
-        webView.getEngine().loadContent( outHTML );
+        // Load different things depending on whether an HTML
+        // file has been created.
+        if (htmlPath == null){
+            // First time this is run, there's no value to htmlPath.
+            // So we display the simple instruction message MDText
+            // is initialized to.
+            String outHTML = md_to_html(MDText);
+            webView.getEngine().loadContent(outHTML);
+        } else {
+            // Convert HTML filepath to URI for WebView.
+            File f = new File(htmlPath);
+            webView.getEngine().load(f.toURI().toString());
+        }       
 
         // Set the scene to be drawn as the WebView object.
         Scene scene = new Scene(webView);
         theJFXPanel.setScene(scene);
-
     };
 
     public static void main(String[] args) {
