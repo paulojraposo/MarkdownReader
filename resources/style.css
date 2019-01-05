@@ -3,12 +3,14 @@ body {
     font-family: 'Crimson Text', 'TeX Gyre Pagella', 'Daniel Black', 'EB Garamond 12', serif;
     font-size: 20px;
 }
+
 pre {
     font-family: 'mononoki', 'Ubuntu Mono', 'Consolas', monospace;
     font-size: 70%; 
     overflow: auto;
-    background-color: rgb(219, 221, 217);
+    background-color: rgb(240, 240, 240);
     border-style: solid;
     border-color: rgb(182, 185, 179);
     border-width: 1px;
+    padding:4px 4px 4px 4px;
 }

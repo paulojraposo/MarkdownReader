@@ -42,6 +42,7 @@ TODO:
 
 public class MarkdownReader {
 
+    static String appName = "MarkdownReader";
     static JFXPanel jfxPanel = new JFXPanel(); // Scrollable JCompenent
     static String MDText = "*Please choose an .md file...*";
     static String mdPath = null;
@@ -130,7 +131,7 @@ public class MarkdownReader {
 
     private static void createAndShowGUI() {
 
-        JFrame frame = new JFrame("Markdown Reader");
+        JFrame frame = new JFrame(appName);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setPreferredSize(new Dimension(540, 700));
 

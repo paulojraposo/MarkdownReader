@@ -1,26 +1,35 @@
-# Markdown Renderer
+# MarkdownReader
 
-![screenshot](resources/Screenshot_20190104_191216.png)
+![screenshot](resources/Screenshot_20190105_025605.png)
 
-A very simple, easy Markdown renderer. Takes an *.md file, transpiles it to an HTML file of the same name and in the same folder using [Atlassian's commonmark-java project](https://github.com/atlassian/commonmark-java), and displays the output in a Java Swing/FX app using a WebView component and accompanying CSS sheet. One can also delete the transpiled HTML file easily from the app.
-
-Open *.md files either by using the app's "Markdown to HTML" button, or supplying their paths to the app on the command line.
+A very simple, easy Markdown-to-HTML processor and viewer. A Java Swing/FX app that takes an *.md file, transpiles it to an *.html file of the same name and in the same folder, and displays the output in according to a CSS sheet. One can also delete the transpiled HTML file easily from the app. It uses [Atlassian's commonmark-java](https://github.com/atlassian/commonmark-java).
 
 ## Usage
 
-Just call Java on the MarkdownReader class, optionally passing the path to an *.md file:
+To start the app, just call Java on the MarkdownReader class, optionally passing the path to an *.md file:
 
-```
+```bash
 java MarkdownReader [aFile.md]
 ```
 
-If you want to customize the styling, simply customize or replace the style.css file in the resources folder.
+...or execute the convenience command line script for your OS...
+
+```bash
+MarkdownReader.sh [aFile.md]  # Linux, Unix, macOS
+MarkdownReader.bat [aFile.md] # Windows
+```
+
+...or launch by clicking on the appropriate convenience script from your OS GUI.
+
+Once it's running, you can open a Markdown file, transpile it, and view the HTML by clicking on the app's "Markdown to HTML" button. The refresh button will re-transpile to HTML and reload the view (e.g., after the *.md has been edited with some other app). Optionally, delete the HTML file with the third button.
+
+If you want to customize the styling (i.e., fonts, colors, etc.), simply customize or replace the style.css file in the resources folder and restart the app.
 
 ## Dependencies
 
-Java 7+, with JavaFX (provided by default from Oracle Java). Ubuntu users and others using OpenJDK might need to install OpenJFX:
+Java 8+, with [JavaFX](https://openjfx.io/). Download from [Gluon](https://gluonhq.com/products/javafx/). Ubuntu users and others using Debian-based Linux can install from the command line:
 
-```
+```bash
 sudo apt install openjfx
 ```
 

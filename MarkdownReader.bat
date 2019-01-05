@@ -1,0 +1,1 @@
+java MarkdownReader %1
