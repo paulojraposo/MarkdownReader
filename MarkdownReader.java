@@ -46,6 +46,7 @@ public class MarkdownReader {
     static String MDText = "*Please choose an .md file...*";
     static String mdPath = null;
     static String htmlPath = null;
+    static File mostRecentDir = null;
 
 
     // With thanks to OscarRyz:
@@ -159,10 +160,16 @@ public class MarkdownReader {
                 fc.setPreferredSize(new Dimension(560,600));
                 // Filter for markdown files.
                 FileNameExtensionFilter filter = new FileNameExtensionFilter("Markdown (\".md\" or \".MD\")", "md", "MD");
+                // Open in the same directory as the last time, if there was a last time.
+                if (mostRecentDir != null){
+                    fc.setCurrentDirectory(mostRecentDir);
+                }
                 fc.setFileFilter(filter);
                 int returnVal = fc.showOpenDialog(frame);
                 if(returnVal == JFileChooser.APPROVE_OPTION) {
                     File chosenFile = fc.getSelectedFile();
+                    // Set directory to have the next file chooser open to, if there is one.
+                    mostRecentDir = new File(chosenFile.getParent());
                     // updateWebViewContentsWithFile(chosenFile);
                     mdPath = chosenFile.getAbsolutePath();
                     makeHTMLFile(chosenFile);
