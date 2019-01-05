@@ -156,10 +156,11 @@ public class MarkdownReader {
             public void actionPerformed(ActionEvent arg0) {
                 //Create a file chooser
                 JFileChooser fc = new JFileChooser();
+                fc.setPreferredSize(new Dimension(560,600));
                 // Filter for markdown files.
-                FileNameExtensionFilter filter = new FileNameExtensionFilter("Markdown", "md", "MD");
+                FileNameExtensionFilter filter = new FileNameExtensionFilter("Markdown (\".md\" or \".MD\")", "md", "MD");
                 fc.setFileFilter(filter);
-                int returnVal = fc.showOpenDialog(jfxPanel);
+                int returnVal = fc.showOpenDialog(frame);
                 if(returnVal == JFileChooser.APPROVE_OPTION) {
                     File chosenFile = fc.getSelectedFile();
                     // updateWebViewContentsWithFile(chosenFile);
