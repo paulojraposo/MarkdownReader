@@ -1,6 +1,6 @@
 # Markdown Renderer
 
-![screenshot](resources/Screenshot_20190103_181002.png)
+![screenshot](resources/Screenshot_20190104_191216.png)
 
 A very simple, easy Markdown renderer. Takes an *.md file, transpiles it to an HTML file of the same name and in the same folder using [Atlassian's commonmark-java project](https://github.com/atlassian/commonmark-java), and displays the output in a Java Swing/FX app using a WebView component and accompanying CSS sheet. One can also delete the transpiled HTML file easily from the app.
 
@@ -26,4 +26,4 @@ sudo apt install openjfx
 
 ## Licensing Notes & Acknowledgements
 
-This software is under MIT License. It makes use of free icons from [Flaticon.com](https://flaticon.com), and [Atlassian's commonmark-java software](https://github.com/atlassian/commonmark-java), itself under the BSD 2-Clause "Simplified" License.
+This software is under MIT License. It uses [Atlassian's commonmark-java software](https://github.com/atlassian/commonmark-java), itself under the BSD 2-Clause "Simplified" License, as well as free icons from [Smashicons](https://www.flaticon.com/authors/smashicons), and [Icons8](https://icons8.com/icon/set/refresh/metro).

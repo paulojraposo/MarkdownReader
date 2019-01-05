@@ -130,19 +130,20 @@ public class MarkdownReader {
     private static void createAndShowGUI() {
 
         JFrame frame = new JFrame("Markdown Reader");
-
-        Container pane = frame.getContentPane();
-        pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setPreferredSize(new Dimension(540, 700));
 
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.setPreferredSize(new Dimension(520, 80));
+        Container pane = frame.getContentPane();
+        pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));
 
-        Dimension buttonSize = new Dimension(200, 74);
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setPreferredSize(new Dimension(520, 86));
+        buttonPanel.setMaximumSize(new Dimension(1000, 86));
+
+        Integer buttonHeight = 74;
 
         JButton openFileButton = new JButton();
-        openFileButton.setPreferredSize(buttonSize);
+        openFileButton.setPreferredSize(new Dimension(200, buttonHeight));
         openFileButton.setToolTipText("Load a Markdown file, transpile it to an HTML file in the same directory, and view it here.");
         try {
             java.awt.Image img = ImageIO.read(MarkdownReader.class.getResource("resources/MDtoHTML.png"));    
@@ -171,10 +172,11 @@ public class MarkdownReader {
         buttonPanel.add(openFileButton);
 
         JButton refreshButton = new JButton();
-        refreshButton.setPreferredSize(new Dimension(74, 74));
+        Integer refreshButtonWidth = buttonHeight;
+        refreshButton.setPreferredSize(new Dimension(refreshButtonWidth, buttonHeight));
         refreshButton.setToolTipText("Re-transpile, save, and load the HTML.");
         try {
-            java.awt.Image img = ImageIO.read(MarkdownReader.class.getResource("resources/icons8-refresh.png"));    
+            java.awt.Image img = ImageIO.read(MarkdownReader.class.getResource("resources/icons8_refresh.png"));    
             refreshButton.setIcon(new ImageIcon(img));
         } catch (Exception e) {
             e.printStackTrace();
@@ -193,7 +195,7 @@ public class MarkdownReader {
         buttonPanel.add(refreshButton);
 
         JButton deleteHTMLButton = new JButton();
-        deleteHTMLButton.setPreferredSize(buttonSize);
+        deleteHTMLButton.setPreferredSize(new Dimension(200, buttonHeight));
         deleteHTMLButton.setToolTipText("Delete the HTML file made when the Markdown was transpiled.");
         try {
             java.awt.Image img = ImageIO.read(MarkdownReader.class.getResource("resources/delHTML.png"));    
