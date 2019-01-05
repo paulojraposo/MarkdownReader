@@ -35,4 +35,4 @@ sudo apt install openjfx
 
 ## Licensing Notes & Acknowledgements
 
-This software is under MIT License. It uses [Atlassian's commonmark-java software](https://github.com/atlassian/commonmark-java), itself under the BSD 2-Clause "Simplified" License, as well as free icons from [Smashicons](https://www.flaticon.com/authors/smashicons), and [Icons8](https://icons8.com/icon/set/refresh/metro).
+This software is under MIT License. It uses [Atlassian's commonmark-java software](https://github.com/atlassian/commonmark-java), itself under the BSD 2-Clause "Simplified" License, as well as free icons from [Freepik](https://www.freepik.com/free-vector/realistic-glasses_803243.htm), [Smashicons](https://www.flaticon.com/authors/smashicons), and [Icons8](https://icons8.com/icon/set/refresh/metro).
