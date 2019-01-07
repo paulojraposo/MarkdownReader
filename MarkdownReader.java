@@ -17,6 +17,9 @@ import java.awt.event.ActionListener;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.ImageIcon;
+import javax.imageio.ImageIO;
+
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -28,9 +31,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
-import javax.imageio.ImageIO;
 
-import javax.swing.TransferHandler;
 
 
 
@@ -114,26 +115,12 @@ public class MarkdownReader {
         }   
     }
 
-    // private static void updateWebViewContentsWithFile(File aFile){
-        
-    //     String filePath = aFile.getAbsolutePath();
-
-    //     try {
-    //         // Read file to string, and set MDText to that string.
-    //         MDText = readFile(filePath);
-    //     } catch (Exception e) {
-    //         MDText = "Something didn't work correctly.";
-    //         e.printStackTrace();
-    //     }
-
-    //     drawFXComponents();
-    // }
-
     private static void createAndShowGUI() {
 
         JFrame frame = new JFrame(appName);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setPreferredSize(new Dimension(540, 700));
+        frame.setIconImage(new ImageIcon("resources/MarkdownReaderIcon.png").getImage());
 
         Container pane = frame.getContentPane();
         pane.setLayout(new BoxLayout(pane, BoxLayout.Y_AXIS));

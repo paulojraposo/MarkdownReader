@@ -17,7 +17,7 @@
    height="751"
    viewBox="0 0 751 751"
    sodipodi:docname="MarkdownReaderIcon.svg"
-   inkscape:export-filename="/home/paulo/Downloads/eyeglasses/MarkdownReaderIcon.png"
+   inkscape:export-filename="/home/paulo/Code/MarkdownReader/resources/MarkdownReaderIcon.png"
    inkscape:export-xdpi="30.68"
    inkscape:export-ydpi="30.68"><metadata
      id="metadata8"><rdf:RDF><cc:Work
@@ -778,8 +778,8 @@
      id="namedview4"
      showgrid="false"
      inkscape:zoom="0.472"
-     inkscape:cx="107.16547"
-     inkscape:cy="464.9865"
+     inkscape:cx="338.09767"
+     inkscape:cy="390.83396"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
@@ -791,7 +791,14 @@
      id="g10"
      inkscape:groupmode="layer"
      inkscape:label="21666-NTF971"
-     transform="matrix(1.25,0,0,-1.25,869.40244,944.30783)"><g
+     transform="matrix(1.25,0,0,-1.25,869.40244,944.30783)"><rect
+       style="opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:14.59420586;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect4384"
+       width="586.20575"
+       height="586.20581"
+       x="-688.22485"
+       y="-748.14917"
+       transform="scale(1,-1)" /><g
        id="g7349"
        transform="translate(-764.12203,97.08475)"><path
          inkscape:connector-curvature="0"
