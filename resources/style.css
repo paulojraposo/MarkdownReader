@@ -1,16 +1,22 @@
 
 body {
-    font-family: 'Crimson Text', 'TeX Gyre Pagella', 'Daniel Black', 'EB Garamond 12', 'Georgia', serif;
-    font-size: 20px;
+  font-family: 'Crimson Text', 'Arno Pro', 'Quintessential', 'Daniel Black', 'Eagle Lake', 'TeX Gyre Pagella', 'EB Garamond', 'Times New Roman', 'Georgia', serif;
+  font-size: 20px;
 }
 
-pre {
-    font-family: 'mononoki', 'Ubuntu Mono', 'Consolas', monospace;
-    font-size: 70%; 
-    overflow: auto;
-    background-color: rgb(240, 240, 240);
-    border-style: solid;
-    border-color: rgb(182, 185, 179);
-    border-width: 1px;
-    padding:4px 4px 4px 4px;
+pre{
+  background-color: rgb(240, 240, 240);
+  border-style: solid;
+  border-color: rgb(182, 185, 179);
+  border-width: 1px;
+  padding: 4px 4px 4px 4px;
+  overflow: auto;
+}
+
+code{
+  background-color: rgb(240, 240, 240);
+  font-family: 'Consolas', 'Ubuntu Mono', 'Roboto Mono', 'Source Code Pro', 'Fira Mono', 'Anonymous Pro', 'Monofur', 'Lucida Console', monospace;
+  font-size: 75%;
+  line-height: 120%;
+  padding: 4px 0px 4px 0px;
 }
