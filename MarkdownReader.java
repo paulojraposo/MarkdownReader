@@ -262,13 +262,20 @@ public class MarkdownReader {
     };
 
     public static void main(String[] args) {
+        
+        // Turn on font anti aliasing - from https://batsov.com/articles/2010/02/26/enable-aa-in-swing/.
+        System.setProperty("awt.useSystemAAFontSettings","on");
+        System.setProperty("swing.aatext", "true");
+
         setLAF();
+        
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
                 createAndShowGUI();
             }
         });
+
         // If the program was started with a file specified as an
         // argument on the command line, load it. At present, we
         // assume it's a full, absolute path to valid Markdown.
@@ -278,6 +285,7 @@ public class MarkdownReader {
             File givenFile = new File(mdPath);
             makeHTMLFile(givenFile);
             drawFXComponents();
+        
         }
     }
 
