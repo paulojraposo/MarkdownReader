@@ -1,7 +1,10 @@
-
+/* 
+MarkdownReader, by Paulo Raposo.
+*/
 
 // commonmark Markdown library by Atlassian:
 // https://github.com/atlassian/commonmark-java
+// https://www.javadoc.io/doc/org.commonmark/commonmark/latest/index.html
 import org.commonmark.node.*;
 import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
@@ -30,7 +33,7 @@ import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
-import java.io.FileWriter;
+// import java.io.FileWriter;
 
 
 
@@ -43,21 +46,25 @@ TODO:
 
 public class MarkdownReader {
 
-    static String appName = "MarkdownReader";
-    static JFXPanel jfxPanel = new JFXPanel(); // Scrollable JCompenent
-    static String MDText = "*Please choose an .md file...*";
-    static String mdPath = null;
-    static String htmlPath = null;
-    static File mostRecentDir = null;
 
+    static String appName        = "MarkdownReader";
+    static JFXPanel jfxPanel     = new JFXPanel(); // Scrollable JCompenent
+    static String MDText         = "*Please choose an .md file...*";
+    static String HTMLTranspiled = null;
+    static String mdPath         = null;
+    static Path mdParentPath     = null;
+    static File mostRecentDir    = null;
+    static ImageVisitor theImgVisitor;
+    static Double zoomLevel       = 1.0;
+    
 
     // With thanks to OscarRyz:
     // https://stackoverflow.com/questions/326390/how-do-i-create-a-java-string-from-the-contents-of-a-file
     private static String readFile(String filepath) throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader (filepath));
-        String         line = null;
-        StringBuilder  stringBuilder = new StringBuilder();
-        String         ls = System.getProperty("line.separator");
+        String line = null;
+        StringBuilder stringBuilder = new StringBuilder();
+        String ls = System.getProperty("line.separator");
         try {
             while((line = reader.readLine()) != null) {
                 stringBuilder.append(line);
@@ -73,46 +80,30 @@ public class MarkdownReader {
         // Set up a commonmark Markdown parser, and use it to transpile to HTML.
         Parser parser = Parser.builder().build();
         Node document = parser.parse(mdText);
+        // Use a Commonmark Visitor class to visit all img nodes and change their file paths to absolute URIs.
+        theImgVisitor = new ImageVisitor(mdParentPath);
+        document.accept(theImgVisitor);
+        // After image path adjustments, render the HTML.
         HtmlRenderer renderer = HtmlRenderer.builder().build();
         return String.valueOf(renderer.render(document));
     }
 
-    private static void makeHTMLFile(File mdFile){
+    private static void makeHTML(File mdFile){
 
+        // Determine file path information from given .md file, needed for later use in adjusting HTML image tags.
         String mdFileAbsPath = mdFile.getAbsolutePath();
-
-        // Define path to HTML file in same directory.
         Path mdPath = Paths.get(mdFileAbsPath);
-        Path mdParentPath = mdPath.getParent();
+        mdParentPath = mdPath.getParent();
         String mdFileName = mdPath.getFileName().toString();
-        String[] nameParts = mdFileName.split("[.]");
-        String mdFileBaseName = nameParts[0];
-        String htmlFileName = mdFileBaseName + ".html";
-        // Set static variable htmlPath so it's accessible outside of this method.
-        htmlPath = mdParentPath.resolve(htmlFileName).toString();
 
         try {
             // Read the MD file to a string.
             String mdText = readFile(mdFileAbsPath);
-            // Create HTML file in same folder as the MD file.
-            BufferedWriter writer = new BufferedWriter(new FileWriter(htmlPath));
-            // Transpile MD to HTML.
-            String htmlText = md_to_html(mdText);
-            writer.write(htmlText);
-            writer.close();
-
+            // Transpile MD to HTML to show in the webview component.
+            HTMLTranspiled = md_to_html(mdText);
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    private static void deleteHTMLFile(){
-        try{
-            Path htmlFilePath = Paths.get(htmlPath);
-            Files.delete(htmlFilePath);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }   
     }
 
     private static void createAndShowGUI() {
@@ -160,7 +151,7 @@ public class MarkdownReader {
                     mostRecentDir = new File(chosenFile.getParent());
                     // updateWebViewContentsWithFile(chosenFile);
                     mdPath = chosenFile.getAbsolutePath();
-                    makeHTMLFile(chosenFile);
+                    makeHTML(chosenFile);
                     drawFXComponents();
                 }
             }
@@ -172,7 +163,8 @@ public class MarkdownReader {
         refreshButton.setPreferredSize(new Dimension(refreshButtonWidth, buttonHeight));
         refreshButton.setToolTipText("Re-transpile, save, and load the HTML.");
         try {
-            java.awt.Image img = ImageIO.read(MarkdownReader.class.getResource("resources/icons8_refresh.png"));    
+            // java.awt.Image img = ImageIO.read(MarkdownReader.class.getResource("resources/icons8_refresh.png"));
+            java.awt.Image img = ImageIO.read(MarkdownReader.class.getResource("resources/oxygen-refresh.png"));
             refreshButton.setIcon(new ImageIcon(img));
         } catch (Exception e) {
             e.printStackTrace();
@@ -180,43 +172,79 @@ public class MarkdownReader {
         refreshButton.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                // Delete the HTML file, reset htmlPath to null, redraw FX.
-                if (htmlPath != null){
+                // Reload and transpile file, redraw FX.
+                if (mdPath != null){
                     File mdFile = new File(mdPath);
-                    makeHTMLFile(mdFile);
+                    makeHTML(mdFile);
                     drawFXComponents();
                 }
             }
         });
         buttonPanel.add(refreshButton);
 
-        JButton deleteHTMLButton = new JButton();
-        deleteHTMLButton.setPreferredSize(new Dimension(200, buttonHeight));
-        deleteHTMLButton.setToolTipText("Delete the HTML file made when the Markdown was transpiled.");
+        JButton zoomInButton = new JButton();
+        Integer zoomInButtonWidth = buttonHeight;
+        zoomInButton.setPreferredSize(new Dimension(zoomInButtonWidth, buttonHeight));
+        zoomInButton.setToolTipText("Zoom in by 10%");
         try {
-            java.awt.Image img = ImageIO.read(MarkdownReader.class.getResource("resources/delHTML.png"));    
-            deleteHTMLButton.setIcon(new ImageIcon(img));
+            java.awt.Image img = ImageIO.read(MarkdownReader.class.getResource("resources/oxygen-zoom-in.png"));
+            zoomInButton.setIcon(new ImageIcon(img));
         } catch (Exception e) {
             e.printStackTrace();
-        } 
-        deleteHTMLButton.addActionListener(new ActionListener(){
+        }
+        zoomInButton.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                // Delete the HTML file, reset htmlPath to null, redraw FX.
-                if (htmlPath != null){
-                    deleteHTMLFile();
-                    mdPath = null;
-                    htmlPath = null;
-                    drawFXComponents();
-                }
+                // Adjust zoomLevel and redraw Reload and transpile file, redraw FX.
+                zoomLevel = zoomLevel + 0.1;
+                drawFXComponents();
             }
         });
-        buttonPanel.add(deleteHTMLButton);
+        buttonPanel.add(zoomInButton);
+
+        JButton zoomResetButton = new JButton();
+        Integer zoomResetButtonWidth = buttonHeight;
+        zoomResetButton.setPreferredSize(new Dimension(zoomResetButtonWidth, buttonHeight));
+        zoomResetButton.setToolTipText("Reset zoom to 100%");
+        try {
+            java.awt.Image img = ImageIO.read(MarkdownReader.class.getResource("resources/oxygen-zoom-reset.png"));
+            zoomResetButton.setIcon(new ImageIcon(img));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        zoomResetButton.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                // Adjust zoomLevel and redraw Reload and transpile file, redraw FX.
+                zoomLevel = 1.0;
+                drawFXComponents();
+            }
+        });
+        buttonPanel.add(zoomResetButton);
+
+        JButton zoomOutButton = new JButton();
+        Integer zoomOutButtonWidth = buttonHeight;
+        zoomOutButton.setPreferredSize(new Dimension(zoomOutButtonWidth, buttonHeight));
+        zoomOutButton.setToolTipText("Zoom in by 10%");
+        try {
+            java.awt.Image img = ImageIO.read(MarkdownReader.class.getResource("resources/oxygen-zoom-out.png"));
+            zoomOutButton.setIcon(new ImageIcon(img));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        zoomOutButton.addActionListener(new ActionListener(){
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                // Adjust zoomLevel and redraw Reload and transpile file, redraw FX.
+                zoomLevel = zoomLevel - 0.1;
+                drawFXComponents();
+            }
+        });
+        buttonPanel.add(zoomOutButton);
 
         frame.add(buttonPanel);
 
-        // Add the JFXPanel to the Swing app, and initialize
-        // it in its own JFX thread.
+        // Add the JFXPanel to the Swing app, and initialize it in its own JFX thread.
         frame.add(jfxPanel);
         drawFXComponents();
 
@@ -243,22 +271,23 @@ public class MarkdownReader {
         String cssPath = String.valueOf(MarkdownReader.class.getResource("resources/style.css"));
         webView.getEngine().setUserStyleSheetLocation(cssPath);
 
-        // Load different things depending on whether an HTML
-        // file has been created.
-        if (htmlPath == null){
-            // First time this is run, there's no value to htmlPath.
-            // So we display the simple instruction message MDText
-            // is initialized to.
+        // Load different things depending on whether an HTML file has been created.
+        if (HTMLTranspiled == null){
+            // First time this is run, there's no value to HTMLTranspiled.
+            // So we display the simple instruction message MDText is initialized to.
             String outHTML = md_to_html(MDText);
             webView.getEngine().loadContent(outHTML);
         } else {
-            // Convert HTML filepath to URI for WebView.
-            File f = new File(htmlPath);
-            webView.getEngine().load(f.toURI().toString());
+            // Load the value of HTMLTranpiled.
+            webView.getEngine().loadContent(HTMLTranspiled);
+            // System.out.println(HTMLTranspiled);
         }
         // Set the scene to be drawn as the WebView object.
         Scene scene = new Scene(webView);
         theJFXPanel.setScene(scene);
+
+        // Zoom
+        webView.setZoom(zoomLevel);
     };
 
     public static void main(String[] args) {
@@ -283,7 +312,7 @@ public class MarkdownReader {
             // String workingDir = System.getProperty("user.dir");
             mdPath = args[0];
             File givenFile = new File(mdPath);
-            makeHTMLFile(givenFile);
+            makeHTML(givenFile);
             drawFXComponents();
         
         }
@@ -308,4 +337,24 @@ public class MarkdownReader {
             }
         }
     }
+}
+
+
+class ImageVisitor extends AbstractVisitor {
+    
+    private static Path parentPath;
+
+    public ImageVisitor(Path aPath){
+        parentPath = aPath;
+    }
+
+    @Override
+    public void visit(org.commonmark.node.Image img) {
+        // Update the paths to images such that they are absolute by the adding parent directory path,
+        // and make it a URI for webview.
+        String destination = parentPath.resolve(img.getDestination()).toString();
+        File destFile = new File(destination);
+        img.setDestination(destFile.toURI().toString());
+    }
+
 }
