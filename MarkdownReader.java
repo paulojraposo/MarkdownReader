@@ -55,6 +55,7 @@ public class MarkdownReader {
     static File mostRecentDir    = null;
     static Double zoomLevel      = 1.0;
     static ImageVisitor theImgVisitor;
+
     
     
 
@@ -160,7 +161,7 @@ public class MarkdownReader {
         JButton refreshButton = new JButton();
         Integer refreshButtonWidth = buttonHeight;
         refreshButton.setPreferredSize(new Dimension(refreshButtonWidth, buttonHeight));
-        refreshButton.setToolTipText("Re-transpile, save, and load the HTML.");
+        refreshButton.setToolTipText("Re-transpile and display the HTML to reflect changes to the *.md or to style.css.");
         try {
             java.awt.Image img = ImageIO.read(MarkdownReader.class.getResource("resources/oxygen-refresh.png"));
             refreshButton.setIcon(new ImageIcon(img));
@@ -286,6 +287,7 @@ public class MarkdownReader {
 
         // Zoom
         webView.setZoom(zoomLevel);
+        // System.out.println( webView.getEngine().executeScript("document.body.scrollTop") );
     };
 
 
