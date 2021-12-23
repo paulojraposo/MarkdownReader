@@ -33,7 +33,6 @@ import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
-// import java.io.FileWriter;
 
 
 
@@ -54,8 +53,9 @@ public class MarkdownReader {
     static String mdPath         = null;
     static Path mdParentPath     = null;
     static File mostRecentDir    = null;
+    static Double zoomLevel      = 1.0;
     static ImageVisitor theImgVisitor;
-    static Double zoomLevel       = 1.0;
+    
     
 
     // With thanks to OscarRyz:
@@ -149,7 +149,6 @@ public class MarkdownReader {
                     File chosenFile = fc.getSelectedFile();
                     // Set directory to have the next file chooser open to, if there is one.
                     mostRecentDir = new File(chosenFile.getParent());
-                    // updateWebViewContentsWithFile(chosenFile);
                     mdPath = chosenFile.getAbsolutePath();
                     makeHTML(chosenFile);
                     drawFXComponents();
@@ -163,7 +162,6 @@ public class MarkdownReader {
         refreshButton.setPreferredSize(new Dimension(refreshButtonWidth, buttonHeight));
         refreshButton.setToolTipText("Re-transpile, save, and load the HTML.");
         try {
-            // java.awt.Image img = ImageIO.read(MarkdownReader.class.getResource("resources/icons8_refresh.png"));
             java.awt.Image img = ImageIO.read(MarkdownReader.class.getResource("resources/oxygen-refresh.png"));
             refreshButton.setIcon(new ImageIcon(img));
         } catch (Exception e) {
@@ -225,7 +223,7 @@ public class MarkdownReader {
         JButton zoomOutButton = new JButton();
         Integer zoomOutButtonWidth = buttonHeight;
         zoomOutButton.setPreferredSize(new Dimension(zoomOutButtonWidth, buttonHeight));
-        zoomOutButton.setToolTipText("Zoom in by 10%");
+        zoomOutButton.setToolTipText("Zoom out by 10%");
         try {
             java.awt.Image img = ImageIO.read(MarkdownReader.class.getResource("resources/oxygen-zoom-out.png"));
             zoomOutButton.setIcon(new ImageIcon(img));
@@ -290,6 +288,28 @@ public class MarkdownReader {
         webView.setZoom(zoomLevel);
     };
 
+
+    private static void setLAF(){
+        // With thanks to BenjaminLinus,
+        // https://stackoverflow.com/questions/4617615/how-to-set-nimbus-look-and-feel-in-main.
+        try {
+            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            // If Nimbus is not available, fall back to cross-platform
+            try {
+                UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+
+
     public static void main(String[] args) {
         
         // Turn on font anti aliasing - from https://batsov.com/articles/2010/02/26/enable-aa-in-swing/.
@@ -318,25 +338,6 @@ public class MarkdownReader {
         }
     }
 
-    private static void setLAF(){
-        // With thanks to BenjaminLinus,
-        // https://stackoverflow.com/questions/4617615/how-to-set-nimbus-look-and-feel-in-main.
-        try {
-            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (Exception e) {
-            // If Nimbus is not available, fall back to cross-platform
-            try {
-                UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-    }
 }
 
 
@@ -358,3 +359,4 @@ class ImageVisitor extends AbstractVisitor {
     }
 
 }
+
